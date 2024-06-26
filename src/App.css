@@ -1,38 +1,74 @@
 .App {
-  text-align: center;
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  padding: 20px;
+  background-image:url("./../public/bg-resume.png");
+  background-position: left;
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+h1 {
+  color: #2c3e50;
+  font-size: 24px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+form {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+}
+
+input, textarea {
+  margin-bottom: 10px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button {
+  padding: 10px;
   color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
-.App-link {
-  color: #61dafb;
+
+.field-array-item {
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 10px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.field-array-item button {
+  background-color: #e74c3c;
+  margin-left: 10px;
+}
+
+.field-array-item button:hover {
+  background-color: #c0392b;
+}
+
+/* styles.css */
+.pdf-download-link {
+  display: inline-block;
+  padding: 10px;
+  color: white;
+  text-decoration: none;
+  /* font-weight: bold; */
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+.download-button {
+  padding: 8px 15px;
+  background-color: #28a745;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.download-button:hover {
+  background-color: #218838;
 }
