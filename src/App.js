@@ -1,17 +1,42 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ResumeForm from './components/ResumeForm';
 import './App.css'; 
 
 const App = () => {
-  const [formData, setFormData] = useState(null);
+  const initialValues = {
+    name: "",
+    role: "",
+    address: "",
+    linkedin: "",
+    email: "",
+    phone: "",
+    about: "",
+    workExperience: [
+      {
+        jobTitle: "",
+        jobCompany: "",
+        jobDuration: "",
+        responsibilities: [""],
+      },
+    ],
+    education: [
+      {
+        study: "",
+        school: "",
+        duration: "",
+      },
+    ],
+    skills: [""],
+    tools: [""],
+  };
 
   const handleSubmit = (values) => {
-    setFormData(values);
+    console.log("Form submitted with values:", values);
   };
 
   return (
-    <div className="App">
-      <ResumeForm onSubmit={handleSubmit} values={formData} />
+    <div>
+      <ResumeForm onSubmit={handleSubmit} initialValues={initialValues} />
     </div>
   );
 };

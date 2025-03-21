@@ -1,11 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { Formik, Field, Form, FieldArray } from "formik";
 import * as Yup from "yup";
 import ResumePDF from "./ResumePDF";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import DeleteBtn from "./DeleteBtn";
-// import { ToastContainer, toast } from "react-toastify"; // TODO : Adding toasts when there is an error
-import 'react-toastify/dist/ReactToastify.css';
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Required"),
@@ -34,54 +32,34 @@ const validationSchema = Yup.object().shape({
   tools: Yup.array().of(Yup.string().required("Required")),
 });
 
-const ResumeForm = ({ onSubmit, values }) => {
-
-  const fileName = `${values?.name}-${values?.role}-Resume`;
+const ResumeForm = ({ onSubmit, initialValues }) => {
+  const [isSubmitted, setIsSubmitted] = useState(false); // Track form submission
 
   return (
     <div className="max-w-4xl mx-auto p-8 bg-white shadow-lg rounded-lg">
       <div className="flex justify-end items-center mb-6">
-        <span className="text-gray-500">Resume builder powered by</span>
-        <img
+        <span className="text-gray-500">Resume builder powered by Godfred Akpan</span>
+        {/* <img
           src={"https://www.werunhq.com/images/logo.png"}
           width={70}
           alt="Logo"
           className="ml-2"
-        />
+        /> */}
       </div>
 
       <Formik
-        initialValues={{
-          name: "",
-          role: "",
-          address: "",
-          linkedin: "",
-          email: "",
-          phone: "",
-          about: "",
-          workExperience: [
-            {
-              jobTitle: "",
-              jobCompany: "",
-              jobDuration: "",
-              responsibilities: [""],
-            },
-          ],
-          education: [
-            {
-              study: "",
-              school: "",
-              duration: "",
-            },
-          ],
-          skills: [""],
-          tools: [""],
-        }}
+        initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={onSubmit}
+        onSubmit={(values, { setSubmitting }) => {
+          console.log("Form submitted with values:", values);
+          onSubmit(values);
+          setIsSubmitted(true); // Set form as submitted
+          setSubmitting(false);
+        }}
       >
-        {({ values }) => (
+        {({ values, isSubmitting }) => (
           <Form className="space-y-6">
+            {/* Personal Information */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold">Personal Information:</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -124,6 +102,7 @@ const ResumeForm = ({ onSubmit, values }) => {
               </div>
             </div>
 
+            {/* Work Experience */}
             <FieldArray name="workExperience">
               {({ push, remove }) => (
                 <div className="space-y-4">
@@ -199,7 +178,7 @@ const ResumeForm = ({ onSubmit, values }) => {
                     onClick={() =>
                       push({
                         jobTitle: "",
-                        jobRole: "",
+                        jobCompany: "",
                         jobDuration: "",
                         responsibilities: [""],
                       })
@@ -212,6 +191,7 @@ const ResumeForm = ({ onSubmit, values }) => {
               )}
             </FieldArray>
 
+            {/* Education */}
             <FieldArray name="education">
               {({ push, remove }) => (
                 <div className="space-y-4">
@@ -258,6 +238,7 @@ const ResumeForm = ({ onSubmit, values }) => {
               )}
             </FieldArray>
 
+            {/* Skills */}
             <FieldArray name="skills">
               {({ push, remove }) => (
                 <div className="space-y-4">
@@ -289,6 +270,7 @@ const ResumeForm = ({ onSubmit, values }) => {
               )}
             </FieldArray>
 
+            {/* Tools & Technologies */}
             <FieldArray name="tools">
               {({ push, remove }) => (
                 <div className="space-y-4">
@@ -320,9 +302,11 @@ const ResumeForm = ({ onSubmit, values }) => {
               )}
             </FieldArray>
 
+            {/* Generate Resume Button */}
             <div className="mt-8 flex justify-center">
               <button
                 type="submit"
+                onClick={() => setIsSubmitted(true)}
                 className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 flex items-center"
               >
                 Generate Resume
@@ -343,41 +327,43 @@ const ResumeForm = ({ onSubmit, values }) => {
                 </svg>
               </button>
             </div>
+
+            {/* PDF Download Link */}
+            { isSubmitted && values && (
+              <PDFDownloadLink
+                document={<ResumePDF formData={values} />}
+                fileName={`${values.name}-${values.role}-Resume.pdf`}
+              >
+                {({ blob, url, loading, error }) => (
+                  <div className="mt-8 flex justify-center">
+                    <button
+                    type="button"
+                      className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 flex items-center"
+                    >
+                      {loading ? "Generating document..." : "Download PDF"}
+                      <svg
+                        className="w-4 h-4 ml-2"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 14 10"
+                      >
+                        <path
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M1 5h12m0 0L9 1m4 4L9 9"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                )}
+              </PDFDownloadLink>
+            )}
           </Form>
         )}
       </Formik>
-
-      {values && (
-        <PDFDownloadLink
-          document={<ResumePDF formData={values} />}
-          fileName={fileName}
-        >
-          {({ blob, url, loading, error }) => (
-            <div className="mt-8 flex justify-center">
-              <button
-                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 flex items-center"
-              >
-                {loading ? "Generating document..." : "Download PDF"}
-                <svg
-                  className="w-4 h-4 ml-2"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 14 10"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M1 5h12m0 0L9 1m4 4L9 9"
-                  />
-                </svg>
-              </button>
-            </div>
-          )}
-        </PDFDownloadLink>
-      )}
     </div>
   );
 };

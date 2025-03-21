@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: '#000000',
-    marginBottom: 0
+    marginBottom: 0,
   },
   headerRole: {
     fontSize: 14,
@@ -77,70 +77,76 @@ const styles = StyleSheet.create({
   },
 });
 
-const ResumePDF = ({ formData }) => (
-  <Document>
-    <Page style={styles.page}>
-      <View style={styles.headerSection}>
-        <View style={styles.headerLeft}>
-          <Text style={styles.headerName}>{formData.name}</Text>
-          <Text style={styles.headerRole}>{formData.role}</Text>
-          <Text style={styles.contact}>{formData.address}</Text>
-          <Text style={styles.contact}>{formData.linkedin}</Text>
-          <Text style={styles.contact}>{formData.email}</Text>
-          <Text style={styles.contact}>{formData.phone}</Text>
-        </View>
-        <View style={styles.headerRight}>
-          <Text>{formData.about}</Text>
-        </View>
-      </View>
+const ResumePDF = ({ formData }) => {
+  if (!formData) {
+    return <Text>No data available to generate the resume.</Text>;
+  }
 
-      <View style={styles.section}>
-        <Text style={styles.subHeader}>Work Experience</Text>
-        <View style={styles.line}></View>
-        {formData.workExperience.map((job, index) => (
-          <View key={index}>
-            <View style={styles.workExperienceItem}>
-              <Text style={styles.column}>{job.jobTitle}</Text>
-              <View style={styles.column}>
-                <Text style={{ textAlign: 'center', fontWeight: 'bolder' }}>{job.jobCompany}</Text>
+  return (
+    <Document>
+      <Page style={styles.page}>
+        <View style={styles.headerSection}>
+          <View style={styles.headerLeft}>
+            <Text style={styles.headerName}>{formData.name}</Text>
+            <Text style={styles.headerRole}>{formData.role}</Text>
+            <Text style={styles.contact}>{formData.address}</Text>
+            <Text style={styles.contact}>{formData.linkedin}</Text>
+            <Text style={styles.contact}>{formData.email}</Text>
+            <Text style={styles.contact}>{formData.phone}</Text>
+          </View>
+          <View style={styles.headerRight}>
+            <Text>{formData.about}</Text>
+          </View>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.subHeader}>Work Experience</Text>
+          <View style={styles.line}></View>
+          {formData.workExperience?.map((job, index) => (
+            <View key={index}>
+              <View style={styles.workExperienceItem}>
+                <Text style={styles.column}>{job.jobTitle}</Text>
+                <View style={styles.column}>
+                  <Text style={{ textAlign: 'center', fontWeight: 'bolder' }}>{job.jobCompany}</Text>
+                </View>
+                <View style={styles.column}>
+                  <Text style={{ textAlign: 'right', fontWeight: 'bolder' }}>{job.jobDuration}</Text>
+                </View>
               </View>
-              <View style={styles.column}>
-                <Text style={{ textAlign: 'right', fontWeight: 'bolder' }}>{job.jobDuration}</Text>
-              </View>
+              {job.responsibilities?.map((responsibility, rIndex) => (
+                <View key={rIndex} style={styles.bulletPoint}>
+                  <Text>•</Text>
+                  <Text style={styles.bulletText}>{responsibility}</Text>
+                </View>
+              ))}
             </View>
-            {job.responsibilities.map((responsibility, rIndex) => (
-              <View key={rIndex} style={styles.bulletPoint}>
-                <Text>•</Text>
-                <Text style={styles.bulletText}>{responsibility}</Text>
-              </View>
-            ))}
-          </View>
-        ))}
-      </View>
+          ))}
+        </View>
 
-      <View style={styles.section}>
-        <Text style={styles.subHeader}>Education</Text>
-        <View style={styles.line}></View>
-        {formData.education.map((edu, index) => (
-          <View key={index}>
-            <Text>Studied {edu.study} at {edu.school} ({edu.duration})</Text>
-          </View>
-        ))}
-      </View>
+        <View style={styles.section}>
+          <Text style={styles.subHeader}>Education</Text>
+          <View style={styles.line}></View>
+          {formData.education?.map((edu, index) => (
+            <View key={index}>
+              <Text>Studied {edu.study} at {edu.school} ({edu.duration})</Text>
+            </View>
+          ))}
+        </View>
 
-      <View style={styles.section}>
-        <Text style={styles.subHeader}>Skills</Text>
-        <View style={styles.line}></View>
-        <Text>{formData.skills.join(' | ')}</Text>
-      </View>
+        <View style={styles.section}>
+          <Text style={styles.subHeader}>Skills</Text>
+          <View style={styles.line}></View>
+          <Text>{formData.skills?.join(' | ')}</Text>
+        </View>
 
-      <View style={styles.section}>
-        <Text style={styles.subHeader}>Tools & Technologies</Text>
-        <View style={styles.line}></View>
-        <Text>{formData.tools.join(' | ')}</Text>
-      </View>
-    </Page>
-  </Document>
-);
+        <View style={styles.section}>
+          <Text style={styles.subHeader}>Tools & Technologies</Text>
+          <View style={styles.line}></View>
+          <Text>{formData.tools?.join(' | ')}</Text>
+        </View>
+      </Page>
+    </Document>
+  );
+};
 
 export default ResumePDF;
